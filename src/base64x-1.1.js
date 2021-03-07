@@ -1,11 +1,9 @@
-/* base64x-1.1.15 (c) 2012-2020 Kenji Urushima | kjur.github.com/jsrsasign/license
+/* base64x-1.1.20 (c) 2012-2021 Kenji Urushima | kjur.github.com/jsrsasign/license
  */
 /*
  * base64x.js - Base64url and supplementary functions for Tom Wu's base64.js library
  *
- * version: 1.1.15 (2020-Apr-11)
- *
- * Copyright (c) 2012-2020 Kenji Urushima (kenji.urushima@gmail.com)
+ * Copyright (c) 2012-2021 Kenji Urushima (kenji.urushima@gmail.com)
  *
  * This software is licensed under the terms of the MIT License.
  * https://kjur.github.io/jsrsasign/license
@@ -18,7 +16,7 @@
  * @fileOverview
  * @name base64x-1.1.js
  * @author Kenji Urushima kenji.urushima@gmail.com
- * @version jsrsasign 8.0.12 base64x 1.1.15 (2020-Apr-11)
+ * @version jsrsasign 10.1.13 base64x 1.1.20 (2021-Mar-07)
  * @since jsrsasign 2.1
  * @license <a href="https://kjur.github.io/jsrsasign/license/">MIT License</a>
  */
@@ -46,6 +44,9 @@ if (typeof KJUR.lang == "undefined" || !KJUR.lang) KJUR.lang = {};
  * <li>{@link KJUR.lang.String.isBase64} - check whether argument is a Base64 encoded string</li>
  * <li>{@link KJUR.lang.String.isBase64URL} - check whether argument is a Base64URL encoded string</li>
  * <li>{@link KJUR.lang.String.isIntegerArray} - check whether argument is an array of integers</li>
+ * <li>{@link KJUR.lang.String.isPrintable} - check whether argument is PrintableString accepted characters</li>
+ * <li>{@link KJUR.lang.String.isIA5} - check whether argument is IA5String accepted characters</li>
+ * <li>{@link KJUR.lang.String.isMail} - check whether argument is RFC 822 e-mail address format</li>
  * </ul>
  * </dl>
  */
@@ -249,6 +250,9 @@ function b64utohex(s) {
  * @param {String} s UTF-8 encoded string
  * @return {String} Base64URL encoded string
  * @since 1.1
+ * @example
+ * utf8tob64u("あ") &rarr; "44GC"
+ * utf8tob64u("aaa") &rarr; "YWFh"
  */
 
 /**
@@ -258,17 +262,20 @@ function b64utohex(s) {
  * @param {String} s Base64URL encoded string
  * @return {String} UTF-8 encoded string
  * @since 1.1
+ * @example
+ * b64utoutf8("44GC") &rarr; "あ"
+ * b64utoutf8("YWFh") &rarr; "aaa"
  */
 
 var utf8tob64u, b64utoutf8;
 
 if (typeof Buffer === 'function') {
   utf8tob64u = function (s) {
-    return b64tob64u(new Buffer(s, 'utf8').toString('base64'));
+    return b64tob64u(Buffer.from(s, 'utf8').toString('base64'));
   };
 
   b64utoutf8 = function (s) {
-    return new Buffer(b64utob64(s), 'base64').toString('utf8');
+    return Buffer.from(b64utob64(s), 'base64').toString('utf8');
   };
 } else {
   utf8tob64u = function (s) {
@@ -910,6 +917,52 @@ function iptohex(s) {
   }
 }
 
+// ==== ucs2hex / utf8 ==============================
+
+/**
+ * convert UCS-2 hexadecimal stirng to UTF-8 string<br/>
+ * @name ucs2hextoutf8
+ * @function
+ * @param {String} s hexadecimal string of UCS-2 string (ex. "0066")
+ * @return {String} UTF-8 string
+ * @since jsrsasign 10.1.13 base64x 1.1.20
+ * @description
+ * This function converts hexadecimal value of UCS-2 string to 
+ * UTF-8 string.
+ * @example
+ * ucs2hextoutf8("006600fc0072") &rarr "für"
+ */
+/*
+See: http://nomenclator.la.coocan.jp/unicode/ucs_utf.htm
+UCS-2 to UTF-8
+UCS-2 code point | UCS-2 bytes       | UTF-8 bytes
+U+0000 .. U+007F | 00000000-0xxxxxxx | 0xxxxxxx (1 byte)
+U+0080 .. U+07FF | 00000xxx-xxyyyyyy | 110xxxxx 10yyyyyy (2 byte)
+U+0800 .. U+FFFF | xxxxyyyy-yyzzzzzz | 1110xxxx 10yyyyyy 10zzzzzz (3 byte)
+ */
+function ucs2hextoutf8(s) {
+    function _conv(s) {
+	var i1 = parseInt(s.substr(0, 2), 16);
+	var i2 = parseInt(s.substr(2), 16);
+	if (i1 == 0 & i2 < 0x80) { // 1 byte
+	    return String.fromCharCode(i2);
+	}
+	if (i1 < 8) { // 2 bytes
+	    var u1 = 0xc0 | ((i1 & 0x07) << 3) | ((i2 & 0xc0) >> 6);
+	    var u2 = 0x80 | (i2 & 0x3f);
+	    return hextoutf8(u1.toString(16) + u2.toString(16));
+	}
+	// 3 bytes
+	var u1 = 0xe0 | ((i1 & 0xf0) >> 4);
+	var u2 = 0x80 | ((i1 & 0x0f) << 2) | ((i2 & 0xc0) >> 6);
+	var u3 = 0x80 | (i2 & 0x3f);
+	return hextoutf8(u1.toString(16) + u2.toString(16) + u3.toString(16));
+    }
+    var a = s.match(/.{4}/g);
+    var a2 = a.map(_conv);
+    return a2.join("");
+}
+
 // ==== URIComponent ================================
 /**
  * convert UTFa hexadecimal string to a URLComponent string such like "%67%68".<br/>
@@ -991,7 +1044,7 @@ KJUR.lang.String.isInteger = function(s) {
 };
 
 /**
- * check whether a string is an hexadecimal string or not<br/>
+ * check whether a string is an hexadecimal string or not (DEPRECATED)<br/>
  * @name isHex
  * @memberOf KJUR.lang.String
  * @function
@@ -999,6 +1052,8 @@ KJUR.lang.String.isInteger = function(s) {
  * @param {String} s input string
  * @return {Boolean} true if a string "s" is an hexadecimal string otherwise false
  * @since base64x 1.1.7 jsrsasign 5.0.13
+ * @deprecated from 10.0.6. please use {@link ishex}
+ * @see ishex
  * @example
  * KJUR.lang.String.isHex("1234") &rarr; true
  * KJUR.lang.String.isHex("12ab") &rarr; true
@@ -1007,6 +1062,25 @@ KJUR.lang.String.isInteger = function(s) {
  * KJUR.lang.String.isHex("121") &rarr; false -- odd length
  */
 KJUR.lang.String.isHex = function(s) {
+    return ishex(s);
+};
+
+/**
+ * check whether a string is an hexadecimal string or not<br/>
+ * @name ishex
+ * @function
+ * @static
+ * @param {String} s input string
+ * @return {Boolean} true if a string "s" is an hexadecimal string otherwise false
+ * @since base64x 1.1.7 jsrsasign 5.0.13
+ * @example
+ * ishex("1234") &rarr; true
+ * ishex("12ab") &rarr; true
+ * ishex("12AB") &rarr; true
+ * ishex("12ZY") &rarr; false
+ * ishex("121") &rarr; false -- odd length
+ */
+function ishex(s) {
     if (s.length % 2 == 0 &&
 	(s.match(/^[0-9a-f]+$/) || s.match(/^[0-9A-F]+$/))) {
 	return true;
@@ -1082,6 +1156,76 @@ KJUR.lang.String.isIntegerArray = function(s) {
     } else {
 	return false;
     }
+};
+
+/**
+ * check whether a string consists of PrintableString characters<br/>
+ * @name isPrintable
+ * @memberOf KJUR.lang.String
+ * @function
+ * @static
+ * @param {String} s input string
+ * @return {Boolean} true if a string "s" consists of PrintableString characters
+ * @since jsrsasign 9.0.0 base64x 1.1.16
+ * A PrintableString consists of following characters
+ * <pre>
+ * 0-9A-Za-z '()+,-./:=?
+ * </pre>
+ * This method returns false when other characters than above.
+ * Otherwise it returns true.
+ * @example
+ * KJUR.lang.String.isPrintable("abc") &rarr; true
+ * KJUR.lang.String.isPrintable("abc@") &rarr; false
+ * KJUR.lang.String.isPrintable("あいう") &rarr; false
+ */
+KJUR.lang.String.isPrintable = function(s) {
+    if (s.match(/^[0-9A-Za-z '()+,-./:=?]*$/) !== null) return true;
+    return false;
+};
+
+/**
+ * check whether a string consists of IAString characters<br/>
+ * @name isIA5
+ * @memberOf KJUR.lang.String
+ * @function
+ * @static
+ * @param {String} s input string
+ * @return {Boolean} true if a string "s" consists of IA5String characters
+ * @since jsrsasign 9.0.0 base64x 1.1.16
+ * A IA5String consists of following characters
+ * <pre>
+ * %x00-21/%x23-7F (i.e. ASCII characters excludes double quote(%x22)
+ * </pre>
+ * This method returns false when other characters than above.
+ * Otherwise it returns true.
+ * @example
+ * KJUR.lang.String.isIA5("abc") &rarr; true
+ * KJUR.lang.String.isIA5('"abc"') &rarr; false
+ * KJUR.lang.String.isIA5("あいう") &rarr; false
+ */
+KJUR.lang.String.isIA5 = function(s) {
+    if (s.match(/^[\x20-\x21\x23-\x7f]*$/) !== null) return true;
+    return false;
+};
+
+/**
+ * check whether a string is RFC 822 mail address<br/>
+ * @name isMail
+ * @memberOf KJUR.lang.String
+ * @function
+ * @static
+ * @param {String} s input string
+ * @return {Boolean} true if a string "s" RFC 822 mail address
+ * @since jsrsasign 9.0.0 base64x 1.1.16
+ * This static method will check string s is RFC 822 compliant mail address.
+ * @example
+ * KJUR.lang.String.isMail("abc") &rarr; false
+ * KJUR.lang.String.isMail("abc@example") &rarr; false
+ * KJUR.lang.String.isMail("abc@example.com") &rarr; true
+ */
+KJUR.lang.String.isMail = function(s) {
+    if (s.match(/^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/) !== null) return true;
+    return false;
 };
 
 // ==== others ================================
@@ -1173,4 +1317,209 @@ var strdiffidx = function(s1, s2) {
     return -1; // same
 };
 
+// ==== hex / oid =================================
 
+/**
+ * get hexadecimal value of object identifier from dot noted oid value
+ * @name oidtohex
+ * @function
+ * @param {String} oidString dot noted string of object identifier
+ * @return {String} hexadecimal value of object identifier
+ * @since jsrsasign 10.1.0 base64x 1.1.18
+ * @see hextooid
+ * @see ASN1HEX.hextooidstr
+ * @see KJUR.asn1.ASN1Util.oidIntToHex
+ * @description
+ * This static method converts from object identifier value string.
+ * to hexadecimal string representation of it.
+ * {@link hextooid} is a reverse function of this.
+ * @example
+ * oidtohex("2.5.4.6") &rarr; "550406"
+ */
+function oidtohex(oidString) {
+    var itox = function(i) {
+        var h = i.toString(16);
+        if (h.length == 1) h = '0' + h;
+        return h;
+    };
+
+    var roidtox = function(roid) {
+        var h = '';
+        var bi = parseInt(roid, 10);
+        var b = bi.toString(2);
+
+        var padLen = 7 - b.length % 7;
+        if (padLen == 7) padLen = 0;
+        var bPad = '';
+        for (var i = 0; i < padLen; i++) bPad += '0';
+        b = bPad + b;
+        for (var i = 0; i < b.length - 1; i += 7) {
+            var b8 = b.substr(i, 7);
+            if (i != b.length - 7) b8 = '1' + b8;
+            h += itox(parseInt(b8, 2));
+        }
+        return h;
+    };
+    
+    try {
+	if (! oidString.match(/^[0-9.]+$/)) return null;
+    
+	var h = '';
+	var a = oidString.split('.');
+	var i0 = parseInt(a[0], 10) * 40 + parseInt(a[1], 10);
+	h += itox(i0);
+	a.splice(0, 2);
+	for (var i = 0; i < a.length; i++) {
+            h += roidtox(a[i]);
+	}
+	return h;
+    } catch(ex) {
+	return null;
+    }
+};
+
+/**
+ * get oid string from hexadecimal value of object identifier<br/>
+ * @name hextooid
+ * @function
+ * @param {String} h hexadecimal value of object identifier
+ * @return {String} dot noted string of object identifier (ex. "1.2.3.4")
+ * @since jsrsasign 10.1.0 base64x 1.1.18
+ * @see oidtohex
+ * @see ASN1HEX.hextooidstr
+ * @see KJUR.asn1.ASN1Util.oidIntToHex
+ * @description
+ * This static method converts from hexadecimal object identifier value 
+ * to dot noted OID value (ex. "1.2.3.4").
+ * {@link oidtohex} is a reverse function of this.
+ * @example
+ * hextooid("550406") &rarr; "2.5.4.6"
+ */
+function hextooid(h) {
+    if (! ishex(h)) return null;
+    try {
+	var a = [];
+
+	// a[0], a[1]
+	var hex0 = h.substr(0, 2);
+	var i0 = parseInt(hex0, 16);
+	a[0] = new String(Math.floor(i0 / 40));
+	a[1] = new String(i0 % 40);
+
+	// a[2]..a[n]
+	var hex1 = h.substr(2);
+	var b = [];
+	for (var i = 0; i < hex1.length / 2; i++) {
+	    b.push(parseInt(hex1.substr(i * 2, 2), 16));
+	}
+	var c = [];
+	var cbin = "";
+	for (var i = 0; i < b.length; i++) {
+            if (b[i] & 0x80) {
+		cbin = cbin + strpad((b[i] & 0x7f).toString(2), 7);
+            } else {
+		cbin = cbin + strpad((b[i] & 0x7f).toString(2), 7);
+		c.push(new String(parseInt(cbin, 2)));
+		cbin = "";
+            }
+	}
+
+	var s = a.join(".");
+	if (c.length > 0) s = s + "." + c.join(".");
+	return s;
+    } catch(ex) {
+	return null;
+    }
+};
+
+/**
+ * string padding<br/>
+ * @name strpad
+ * @function
+ * @param {String} s input string
+ * @param {Number} len output string length
+ * @param {String} padchar padding character (default is "0")
+ * @return {String} padded string
+ * @since jsrsasign 10.1.0 base64x 1.1.18
+ * @example
+ * strpad("1234", 10, "0") &rarr; "0000001234"
+ * strpad("1234", 10, " ") &rarr; "      1234"
+ * strpad("1234", 10)      &rarr; "0000001234"
+ */
+var strpad = function(s, len, padchar) {
+    if (padchar == undefined) padchar = "0";
+    if (s.length >= len) return s;
+    return new Array(len - s.length + 1).join(padchar) + s;
+};
+
+// ==== bitstr hex / int =================================
+
+/**
+ * convert from hexadecimal string of ASN.1 BitString value with unused bit to integer value<br/>
+ * @name bitstrtoint
+ * @function
+ * @param {String} h hexadecimal string of ASN.1 BitString value with unused bit
+ * @return {Number} positive integer value of the BitString
+ * @since jsrsasign 10.1.3 base64x 1.1.19
+ * @see inttobitstr
+ * @see KJUR.asn1.DERBitString
+ * @see ASN1HEX.getInt
+ * 
+ * @description
+ * This function converts from hexadecimal string of ASN.1 BitString
+ * value with unused bit to its integer value.
+ * 
+ * @example
+ * // "03c8" &rarr; 0xc8 unusedbit=03 &rarr; 11001000b unusedbit=03 &rarr; 11001b &rarr; 25
+ * bitstrtoint("03c8") &rarr; 25
+ * // "02fff8" &rarr; 0xfff8 unusedbit=02 &rarr; 1111111111111000b unusedbit=02
+ * //   11111111111110b &rarr; 16382
+ * bitstrtoint("02fff8") &rarr; 16382
+ */
+function bitstrtoint(h) {
+    try {
+	var hUnusedbit = h.substr(0, 2);
+	if (hUnusedbit == "00")
+	    return parseInt(h.substr(2), 16);
+	var iUnusedbit = parseInt(hUnusedbit, 16);
+	var hValue = h.substr(2);
+	var bValue = parseInt(hValue, 16).toString(2);
+	if (bValue == "0") bValue = "00000000";
+	bValue = bValue.slice(0, 0 - iUnusedbit);
+	return parseInt(bValue, 2);
+    } catch(ex) {
+	return -1;
+    }
+};
+
+
+/**
+ * convert from integer value to hexadecimal string of ASN.1 BitString value with unused bit<br/>
+ * @name inttobitstr
+ * @function
+ * @param {Number} n integer value of ASN.1 BitString
+ * @return {String} hexadecimal string of ASN.1 BitString value with unused bit
+ * @since jsrsasign 10.1.3 base64x 1.1.19
+ * @see bitstrtoint
+ * @see KJUR.asn1.DERBitString
+ * @see ASN1HEX.getInt
+ * 
+ * @description
+ * This function converts from an integer value to 
+ * hexadecimal string of ASN.1 BitString value
+ * with unused bit.
+ * 
+ * @example
+ * // 25 &rarr; 11001b &rarr; 11001000b unusedbit=03 &rarr; 0xc8 unusedbit=03 &rarr; "03c8"
+ * inttobitstr(25) &rarr; "03c8"
+ */
+function inttobitstr(n) {
+    var bValue = Number(n).toString(2);
+    var iUnusedbit = 8 - bValue.length % 8;
+    if (iUnusedbit == 8) iUnusedbit = 0;
+    bValue = bValue + strpad("", iUnusedbit, "0");
+    var hValue = parseInt(bValue, 2).toString(16);
+    if (hValue.length % 2 == 1) hValue = "0" + hValue;
+    var hUnusedbit = "0" + iUnusedbit;
+    return hUnusedbit + hValue;
+};

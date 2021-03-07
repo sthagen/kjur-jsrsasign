@@ -1,4 +1,4 @@
-/* keyutil-1.2.1.js (c) 2013-2020 Kenji Urushima | kjur.github.com/jsrsasign/license
+/* keyutil-1.2.3.js (c) 2013-2021 Kenji Urushima | kjur.github.com/jsrsasign/license
  */
 /*
  * keyutil.js - key utility for PKCS#1/5/8 PEM, RSA/DSA/ECDSA key object
@@ -15,7 +15,7 @@
  * @fileOverview
  * @name keyutil-1.0.js
  * @author Kenji Urushima kenji.urushima@gmail.com
- * @version jsrsasign 8.0.14 keyutil 1.2.1 (2020-Apr-11)
+ * @version jsrsasign 10.1.6 keyutil 1.2.3 (2021-Feb-08)
  * @since jsrsasign 4.1.4
  * @license <a href="https://kjur.github.io/jsrsasign/license/">MIT License</a>
  */
@@ -596,23 +596,28 @@ var KEYUTIL = function() {
 
             // 1. sequence
             if (pkcs8PrvHex.substr(0, 2) != "30")
-                throw "malformed plain PKCS8 private key(code:001)"; // not sequence
+                throw new Error("malformed plain PKCS8 private key(code:001)");
+	        // not sequence
 
             var a1 = _getChildIdx(pkcs8PrvHex, 0);
-            if (a1.length != 3)
-                throw "malformed plain PKCS8 private key(code:002)";
+            if (a1.length < 3)
+                throw new Error("malformed plain PKCS8 private key(code:002)");
+                // less elements
 
             // 2. AlgID
             if (pkcs8PrvHex.substr(a1[1], 2) != "30")
-                throw "malformed PKCS8 private key(code:003)"; // AlgId not sequence
+                throw new Error("malformed PKCS8 private key(code:003)");
+                // AlgId not sequence
 
             var a2 = _getChildIdx(pkcs8PrvHex, a1[1]);
             if (a2.length != 2)
-                throw "malformed PKCS8 private key(code:004)"; // AlgId not have two elements
+                throw new Error("malformed PKCS8 private key(code:004)");
+                // AlgId not have two elements
 
             // 2.1. AlgID OID
             if (pkcs8PrvHex.substr(a2[0], 2) != "06")
-                throw "malformed PKCS8 private key(code:005)"; // AlgId.oid is not OID
+                throw new Error("malformed PKCS8 private key(code:005)");
+                // AlgId.oid is not OID
 
             result.algoid = _getV(pkcs8PrvHex, a2[0]);
 
@@ -623,7 +628,8 @@ var KEYUTIL = function() {
 
             // 3. Key index
             if (pkcs8PrvHex.substr(a1[2], 2) != "04")
-                throw "malformed PKCS8 private key(code:006)"; // not octet string
+                throw new Error("malformed PKCS8 private key(code:006)");
+                // not octet string
 
             result.keyidx = _ASN1HEX.getVidx(pkcs8PrvHex, a1[2]);
 
@@ -1197,7 +1203,7 @@ KEYUTIL.getKey = function(param, passcode, hextype) {
         return _KEYUTIL.getKeyFromEncryptedPKCS8PEM(param, passcode);
     }
 
-    throw "not supported argument";
+    throw new Error("not supported argument");
 };
 
 /**
@@ -1616,7 +1622,7 @@ KEYUTIL.getPEM = function(keyObjOrHex, formatType, passwd, encAlg, hexType, ivsa
         }
     }
 
-    throw "unsupported object nor format";
+    throw new Error("unsupported object nor format");
 };
 
 // -- PUBLIC METHODS FOR CSR --------------------------------------------------
@@ -1693,7 +1699,39 @@ KEYUTIL.parseCSRHex = function(csrHex) {
     return result;
 };
 
-// -- OTHER STATIC PUBLIC METHODS  -------------------------------------------------
+// -- OTHER STATIC PUBLIC METHODS  --------------------------------------------
+
+/**
+ * get key ID by public key object for subject or authority key identifier
+ * @name getKeyID
+ * @memberof KEYUTIL
+ * @function
+ * @static
+ * @param {Object} obj RSAKey/KJUR.crypto.ECDSA,DSA public key object or public key PEM string
+ * @return hexadecimal string of public key identifier
+ * @since keyutil 1.2.2 jsrsasign 5.0.16
+ * @description
+ * This static method generates a key identifier from a public key
+ * by the method described in 
+ * <a href="https://tools.ietf.org/html/rfc5280#section-4.2.1.2"
+ * target="_blank">RFC 5280 4.2.1.2. Subject Key Identifier (1)</a>.
+ * @example
+ * pubkeyobj = KEYUTIL.getKey(...);
+ * KEYTUTIL.getKey(pubkeyobj) &rarr; "a612..."
+ */
+KEYUTIL.getKeyID = function(obj) {
+    var _KEYUTIL = KEYUTIL;
+    var _ASN1HEX = ASN1HEX;
+
+    if (typeof obj  === "string" && obj.indexOf("BEGIN ") != -1) {
+	obj = _KEYUTIL.getKey(obj);
+    }
+
+    var p8hex = pemtohex(_KEYUTIL.getPEM(obj));
+    var idx = _ASN1HEX.getIdxbyList(p8hex, 0, [1]); // BITSTRING
+    var hV = _ASN1HEX.getV(p8hex, idx).substring(2); // value without unused bit
+    return KJUR.crypto.Util.hashHex(hV, "sha1");
+}
 
 /**
  * convert from RSAKey/KJUR.crypto.ECDSA public/private key object to RFC 7517 JSON Web Key(JWK)

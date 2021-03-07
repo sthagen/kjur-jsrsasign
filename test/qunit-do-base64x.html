@@ -62,6 +62,16 @@ test("b64utohex", function() {
     "123");
 });
 
+test("utf8tob64u", function() {
+equal(utf8tob64u("あ"), "44GC", "あ");
+equal(utf8tob64u("aaa"), "YWFh", "aaa");
+});
+
+test("b64utoutf8", function() {
+equal(b64utoutf8("44GC"), "あ", "あ");
+equal(b64utoutf8("YWFh"), "aaa", "aaa");
+});
+
 test("KJUR.lang.String.isInteger", function() {
   equal(KJUR.lang.String.isInteger("123"), true, "123");
   equal(KJUR.lang.String.isInteger("-123"), true, "-123");
@@ -99,6 +109,33 @@ test("KJUR.lang.String.isIntegerArray", function() {
   equal(KJUR.lang.String.isIntegerArray(" [1, 3, 4]   "), true, " [1, 3, 4]   with space chars");
   equal(KJUR.lang.String.isIntegerArray("[[1,3,4]"), false, "[[1,3,4]");
   equal(KJUR.lang.String.isIntegerArray("[a,3,4]"), false, "[a,3,4]");
+});
+
+test("KJUR.lang.String.isPrintable test", function() {
+var _isPrintable = KJUR.lang.String.isPrintable;
+equal(_isPrintable("abc"), true, "abc > true");
+equal(_isPrintable("abc@"), false, "abc@ > false");
+equal(_isPrintable("あいう"), false, "あいう > false");
+equal(_isPrintable("abc_"), false, "abc_ > false");
+});
+
+test("KJUR.lang.String.isIA5 test", function() {
+var _isIA5 = KJUR.lang.String.isIA5;
+equal(_isIA5("abc"), true, "abc > true");
+equal(_isIA5("abc@"), true, "abc@ > true");
+equal(_isIA5('"abc"'), false, '"abc" > false');
+equal(_isIA5("あいう"), false, "あいう > false");
+});
+
+test("KJUR.lang.String.isMail test", function() {
+var _isMail = KJUR.lang.String.isMail;
+equal(_isMail("abc"), false, "abc > false");
+equal(_isMail("abc@"), false, "abc@ > false");
+equal(_isMail("abc@example"), false, "abc@example > false");
+equal(_isMail("abc@example.com"), true, "abc@example.com > true");
+equal(_isMail("abc-1@example.com"), true, "abc-1@example.com > true");
+equal(_isMail("abc_2@example.com"), true, "abc_2@example.com > true");
+equal(_isMail("あいう"), false, "あいう > false");
 });
 
 test("hextoArrayBuffer", function() {
@@ -254,6 +291,55 @@ test("iptohex", function() {
         '20010db80000000000000000abcdef12',
         '2001:db8::abcd:ef12');
 });
+
+test("ucs2hextoutf8", function() {
+  equal(ucs2hextoutf8('006600fc0072'), 'für', 'für');
+});
+
+test("oidtohex", function() {
+equal(oidtohex("2.16.840.1.101.3.4.2.1"), "608648016503040201", "sha256");
+equal(oidtohex("1.2.840.113549.1.1.5"), "2a864886f70d010105", "SHA1withRSA");
+equal(oidtohex("2.5.4.6"), "550406", "2.5.4.6=550406");
+equal(oidtohex("2.5.12345"), "55e039", "2.5.12345=55e039");
+equal(oidtohex("2.5.b30="), null, "2.5.b30==null");
+});
+
+test("hextooid", function() {
+equal(hextooid("608648016503040201"), "2.16.840.1.101.3.4.2.1", "sha256");
+equal(hextooid("2a864886f70d010105"), "1.2.840.113549.1.1.5", "SHA1withRSA");
+equal(hextooid("=-=-"), null, "=-=- > null");
+});
+
+test("strpad test", function() {
+equal(strpad("1234", 10, "0"), "0000001234", "1234 10 0");
+equal(strpad("1234", 10, " "), "      1234", "1234 10 _");
+equal(strpad("1234", 10), "0000001234", "1234 10");
+equal(strpad("1234", 3), "1234", "1234 3");
+});
+
+test("bitstrtoint test", function() {
+equal(bitstrtoint("0700"), 0, "0700 > 0");
+equal(bitstrtoint("0780"), 1, "0780 > 1");
+equal(bitstrtoint("0680"), 2, "0680 > 2");
+equal(bitstrtoint("06c0"), 3, "06c0 > 3");
+equal(bitstrtoint("04b0"), 11, "04b0 > 11");
+equal(bitstrtoint("03c8"), 25, "03c8 > 25");
+equal(bitstrtoint("02fff8"), 16382, "02ff8 > 16382");
+equal(bitstrtoint("02fffc"), 16383, "02ffc > 16383");
+});
+
+test("inttobitstr test", function() {
+equal(inttobitstr(0), "0700", "0 > 0700");
+equal(inttobitstr(1), "0780", "1 > 0780");
+equal(inttobitstr(2), "0680", "2 > 0680");
+equal(inttobitstr(3), "06c0", "3 > 06c0");
+equal(inttobitstr(11), "04b0", "11 > 04b0");
+equal(inttobitstr(25), "03c8", "25 > 03c8");
+equal(inttobitstr(16382), "02fff8", "16382 > 02fff8");
+equal(inttobitstr(16383), "02fffc", "16383 > 02fffc");
+});
+
+
 
 });
 </script>
