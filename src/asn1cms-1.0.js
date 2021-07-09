@@ -135,7 +135,7 @@ KJUR.asn1.cms.Attribute = function(params) {
 	return seq.getEncodedHex();
     };
 };
-YAHOO.lang.extend(KJUR.asn1.cms.Attribute, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.Attribute, KJUR.asn1.ASN1Object);
 
 /**
  * class for CMS ContentType attribute
@@ -181,7 +181,7 @@ KJUR.asn1.cms.ContentType = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.ContentType, KJUR.asn1.cms.Attribute);
+extendClass(KJUR.asn1.cms.ContentType, KJUR.asn1.cms.Attribute);
 
 /**
  * class for CMS MessageDigest attribute
@@ -224,7 +224,7 @@ KJUR.asn1.cms.MessageDigest = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.MessageDigest, KJUR.asn1.cms.Attribute);
+extendClass(KJUR.asn1.cms.MessageDigest, KJUR.asn1.cms.Attribute);
 
 /**
  * class for CMS SigningTime attribute
@@ -271,7 +271,7 @@ KJUR.asn1.cms.SigningTime = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SigningTime, KJUR.asn1.cms.Attribute);
+extendClass(KJUR.asn1.cms.SigningTime, KJUR.asn1.cms.Attribute);
 
 /**
  * class for CMS SigningCertificate attribute<br/>
@@ -350,7 +350,7 @@ KJUR.asn1.cms.SigningCertificate = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SigningCertificate, KJUR.asn1.cms.Attribute);
+extendClass(KJUR.asn1.cms.SigningCertificate, KJUR.asn1.cms.Attribute);
 
 /**
  * class for CMS ESSCertID ASN.1 encoder<br/>
@@ -467,7 +467,7 @@ KJUR.asn1.cms.ESSCertID = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.ESSCertID, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.ESSCertID, KJUR.asn1.ASN1Object);
 
 /**
  * class for CMS SigningCertificateV2 attribute<br/>
@@ -572,7 +572,7 @@ KJUR.asn1.cms.SigningCertificateV2 = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SigningCertificateV2, KJUR.asn1.cms.Attribute);
+extendClass(KJUR.asn1.cms.SigningCertificateV2, KJUR.asn1.cms.Attribute);
 
 /**
  * class for CMS ESSCertIDv2 ASN.1 encoder<br/>
@@ -648,10 +648,10 @@ KJUR.asn1.cms.ESSCertIDv2 = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.ESSCertIDv2, KJUR.asn1.cms.ESSCertID);
+extendClass(KJUR.asn1.cms.ESSCertIDv2, KJUR.asn1.cms.ESSCertID);
 
 /**
- * class for IssuerSerial ASN.1 structure for CMS
+ * class for IssuerSerial ASN.1 structure for CMS<br/>
  * @name KJUR.asn1.cms.IssuerSerial
  * @class class for CMS IssuerSerial ASN.1 structure for CMS
  * @param {Array} params associative array of parameters
@@ -667,14 +667,14 @@ YAHOO.lang.extend(KJUR.asn1.cms.ESSCertIDv2, KJUR.asn1.cms.ESSCertID);
  *
  * @description
  * This class represents IssuerSerial ASN.1 structure
+ * used by ESSCertID/v2 of SigningCertificate/V2 attribute
  * defined in 
- * <a href="https://tools.ietf.org/html/rfc5035#page-6>
+ * <a href="https://tools.ietf.org/html/rfc5035#page-6">
  * RFC 5034 section 4</a>.
  * <pre>
  * IssuerSerial ::= SEQUENCE {
- *    issuer                   GeneralNames,
- *    serialNumber             CertificateSerialNumber
- * }
+ *    issuer          GeneralNames,
+ *    serialNumber    CertificateSerialNumber }
  * CertificateSerialNumber ::= INTEGER
  * </pre>
  *
@@ -737,7 +737,7 @@ KJUR.asn1.cms.IssuerSerial = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.IssuerSerial, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.IssuerSerial, KJUR.asn1.ASN1Object);
 
 /**
  * class for SignerIdentifier ASN.1 structure for CMS
@@ -830,7 +830,7 @@ KJUR.asn1.cms.SignerIdentifier = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SignerIdentifier, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.SignerIdentifier, KJUR.asn1.ASN1Object);
 
 /**
  * class for IssuerAndSerialNumber ASN.1 structure for CMS<br/>
@@ -839,6 +839,7 @@ YAHOO.lang.extend(KJUR.asn1.cms.SignerIdentifier, KJUR.asn1.ASN1Object);
  * @param {Array} params associative array of parameters
  * @extends KJUR.asn1.ASN1Object
  * @since jsrsasign 4.2.4 asn1cms 1.0.0
+ * @see KJUR.asn1.cms.IssuerSerial
  *
  * @description
  * This class encodes IssuerAndSerialNumber ASN.1 structure defined in
@@ -846,8 +847,8 @@ YAHOO.lang.extend(KJUR.asn1.cms.SignerIdentifier, KJUR.asn1.ASN1Object);
  * RFC 5662 CMS 10.2.4</a>. 
  * <pre>
  * IssuerAndSerialNumber ::= SEQUENCE {
- *    issuer Name,
- *    serialNumber CertificateSerialNumber }
+ *    issuer           Name,
+ *    serialNumber     CertificateSerialNumber }
  * CertificateSerialNumber ::= INTEGER
  * </pre>
  * Constructor of this class can have following parameters:
@@ -918,7 +919,7 @@ KJUR.asn1.cms.IssuerAndSerialNumber = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.IssuerAndSerialNumber, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.IssuerAndSerialNumber, KJUR.asn1.ASN1Object);
 
 /**
  * class for SubjectKeyIdentifier ASN.1 structure for CMS SignerInfo<br/>
@@ -977,7 +978,7 @@ KJUR.asn1.cms.SubjectKeyIdentifier = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SubjectKeyIdentifier, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.SubjectKeyIdentifier, KJUR.asn1.ASN1Object);
 
 /**
  * class for Attributes ASN.1 structure for CMS<br/>
@@ -1061,7 +1062,7 @@ KJUR.asn1.cms.AttributeList = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.AttributeList, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.AttributeList, KJUR.asn1.ASN1Object);
 
 /**
  * class for SignerInfo ASN.1 structure of CMS SignedData<br/>
@@ -1229,7 +1230,7 @@ KJUR.asn1.cms.SignerInfo = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SignerInfo, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.SignerInfo, KJUR.asn1.ASN1Object);
 
 /**
  * class for EncapsulatedContentInfo ASN.1 structure for CMS<br/>
@@ -1307,7 +1308,7 @@ KJUR.asn1.cms.EncapsulatedContentInfo = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.EncapsulatedContentInfo, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.EncapsulatedContentInfo, KJUR.asn1.ASN1Object);
 
 // - type
 // - obj
@@ -1367,7 +1368,7 @@ KJUR.asn1.cms.ContentInfo = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.ContentInfo, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.ContentInfo, KJUR.asn1.ASN1Object);
 
 /**
  * class for SignerInfo ASN.1 structure of CMS SignedData
@@ -1710,7 +1711,7 @@ KJUR.asn1.cms.SignedData = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.SignedData, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.SignedData, KJUR.asn1.ASN1Object);
 
 /**
  * class for CertificateSet ASN.1 structure for CMS SignedData<br/>
@@ -1796,7 +1797,7 @@ KJUR.asn1.cms.CertificateSet = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.CertificateSet, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.CertificateSet, KJUR.asn1.ASN1Object);
 
 /**
  * class for RevocationInfoChoices ASN.1 structure for CMS SignedData<br/>
@@ -1850,7 +1851,7 @@ KJUR.asn1.cms.RevocationInfoChoices = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.RevocationInfoChoices, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.RevocationInfoChoices, KJUR.asn1.ASN1Object);
 
 /**
  * class for RevocationInfoChoice ASN.1 structure for CMS SignedData<br/>
@@ -1911,7 +1912,7 @@ KJUR.asn1.cms.RevocationInfoChoice = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.RevocationInfoChoice, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.RevocationInfoChoice, KJUR.asn1.ASN1Object);
 
 /**
  * class for OtherRevocationFormat ASN.1 structure for CMS SignedData<br/>
@@ -1975,7 +1976,7 @@ KJUR.asn1.cms.OtherRevocationFormat = function(params) {
 
     if (params != undefined) this.setByParam(params);
 };
-YAHOO.lang.extend(KJUR.asn1.cms.OtherRevocationFormat, KJUR.asn1.ASN1Object);
+extendClass(KJUR.asn1.cms.OtherRevocationFormat, KJUR.asn1.ASN1Object);
 
 /**
  * CMS utiliteis class
