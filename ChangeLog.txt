@@ -1,12 +1,32 @@
 
 ChangeLog for jsrsasign
 
+GeneralizedTime, UTCTime refactoring and some bug fix
+* Changes from 10.4.0 to 10.4.1 release
+  - src/asn1.js
+    - refactoring of DERUTCTime, DERGeneralizedTime and DERAbstractTime
+    - now DERUTCTime support fraction of second
+  - src/asn1x509.js
+    - update Time class to follow DER{UTC,Generalized}Time update
+  - tool/tool_tsreq.html
+    - messageImprint bug fix (#504)
+  - tool/tool_tsres.html
+    - serialNumber bug fix (#505)
+  - jsrsasign-*-min.js
+    - header URL fix to kjur.github.io (#503)
+      (will be fixed in next release while rebuild)
+  - test/qunit-do-{asn1,asn1x509}.html updated 
+    - KJUR.asn1.DER{UTC,Generalized}Time, KJUR.asn1.x509.Time class
+      test case added and updated.
+
 Full support for parsing OCSP response
 * Changes from 10.3.2 to 10.4.0 (2021-08-17)
   - asn1ocsp.js
     - add OCSP response parser support in OCSPParser class (request #501)
     - OCSPParser.get{OCSPResponse,ResponseBytes,BasicOCSPResponse,ResponseData,ResponderID,SingleResponseList,SingleResponse,CertStatus} methods added
     - DEPRECATED: OCSPUtil.getOCSPResponseInfo
+  - test/qunit-do-asn1ocsp.html updated
+    - add test for OCSP response parser
 
 fix wrong OCSPRequest for EC public key certificate
 * Changes from 10.3.1 to 10.3.2 (2021-08-15)
