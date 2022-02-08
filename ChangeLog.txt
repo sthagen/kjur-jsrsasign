@@ -1,12 +1,21 @@
 
 ChangeLog for jsrsasign
 
+small update for OID and JWK
+* Changes from 10.5.1 to 10.5.2 (2022-Feb-08)
+  - src/asn1x509.js
+    - add OID.{registerOIDs,checkOIDs} method
+  - src/keyutil.js
+    - getJWK, getJWKFromKey API doc update
+  - test/qunit-do-asn1x509.html updated
+    - test case added
+
 add KEYUTIL.getJWK, fix EC P-521 concat signature value and add support for P-521 JWS JWK
 * Changes from 10.5.0 to 10.5.1 (2021-Dec-01)
   - fix ECC P-521 curve issues (#528)
     - src/ecdsa-modified.js
-      - asn1SigToConcatSig fix P521 issue
-      - concatSigToASN1Sig fix P521 issue
+      - asn1SigToConcatSig fix P-521 issue
+      - concatSigToASN1Sig fix P-521 issue
     - src/jws.js
       - add ES512 support
     - src/keyutil.js
@@ -41,7 +50,7 @@ add KEYUTIL.getJWK, fix EC P-521 concat signature value and add support for P-52
   - Great appreciate for @cplussharp 's contribution.
 
 Add EC support for secp521r1 secp224r1 secp192r1
-* Changes from 10.4.1 to 10.5.0
+* Changes from 10.4.1 to 10.5.0 (2021-Nov-21)
   - Add EC support for secp521r1 secp224r1 secp192r1 (#521 #519)
     Thank you indeed for @cplussharp 's great work.
     - EC key length bugs for newly supported curves are fixed.
@@ -57,7 +66,7 @@ Add EC support for secp521r1 secp224r1 secp192r1
     - fix to trim non hexadecimal strings (#517)
 
 GeneralizedTime, UTCTime refactoring and some bug fix
-* Changes from 10.4.0 to 10.4.1 release
+* Changes from 10.4.0 to 10.4.1 release (2021-Sep-30)
   - src/asn1.js
     - refactoring of DERUTCTime, DERGeneralizedTime and DERAbstractTime
     - now DERUTCTime support fraction of second
