@@ -1,9 +1,9 @@
-/* asn1tsp-2.0.4.js (c) 2014-2020 Kenji Urushima | kjur.github.io/jsrsasign/license
+/* asn1tsp-2.0.6.js (c) 2014-2022 Kenji Urushima | kjur.github.io/jsrsasign/license
  */
 /*
  * asn1tsp.js - ASN.1 DER encoder classes for RFC 3161 Time Stamp Protocol
  *
- * Copyright (c) 2014-2017 Kenji Urushima (kenji.urushima@gmail.com)
+ * Copyright (c) 2014-2022 Kenji Urushima (kenji.urushima@gmail.com)
  *
  * This software is licensed under the terms of the MIT License.
  * https://kjur.github.io/jsrsasign/license
@@ -16,7 +16,7 @@
  * @fileOverview
  * @name asn1tsp-1.0.js
  * @author Kenji Urushima kenji.urushima@gmail.com
- * @version jsrsasign 10.1.4 asn1tsp 2.0.4 (2020-Nov-22)
+ * @version jsrsasign 10.5.18 asn1tsp 2.0.6 (2022-Apr-22)
  * @since jsrsasign 4.5.1
  * @license <a href="https://kjur.github.io/jsrsasign/license/">MIT License</a>
  */
@@ -137,7 +137,7 @@ KJUR.asn1.tsp.TimeStampToken = function(params) {
     this.getEncodedHexPrepare = function() {
 	//alert("getEncodedHexPrepare called...");
 	var dTSTInfo = new _KJUR_asn1_tsp.TSTInfo(this.params.econtent.content);
-	this.params.econtent.content.hex = dTSTInfo.getEncodedHex();
+	this.params.econtent.content.hex = dTSTInfo.tohex();
     };
 
     if (params != undefined) this.setByParam(params);
@@ -214,7 +214,7 @@ KJUR.asn1.tsp.TSTInfo = function(params) {
     this.dNonce = null;
     this.dTsa = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
         var a = [this.dVersion];
 
         if (this.dPolicy == null) throw new Error("policy shall be specified.");
@@ -238,9 +238,10 @@ KJUR.asn1.tsp.TSTInfo = function(params) {
         if (this.dTsa != null) a.push(this.dTsa);
 
         var seq = new _DERSequence({array: a});
-        this.hTLV = seq.getEncodedHex();
+        this.hTLV = seq.tohex();
         return this.hTLV;
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params !== undefined) {
         if (typeof params.policy == "string") {
@@ -314,7 +315,7 @@ KJUR.asn1.tsp.Accuracy = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 	var a = [];
 	if (params.seconds != undefined &&
@@ -329,8 +330,9 @@ KJUR.asn1.tsp.Accuracy = function(params) {
 	    typeof params.micros == "number") {
 	    a.push({tag: {tagi:"81", obj:{"int": params.micros}}});
 	}
-	return _newObject({"seq": a}).getEncodedHex();
+	return _newObject({"seq": a}).tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -379,13 +381,14 @@ KJUR.asn1.tsp.MessageImprint = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 	var dAlg = new _AlgorithmIdentifier({name: params.alg});
 	var dHash = new _DEROctetString({hex: params.hash});
 	var seq = new _DERSequence({array: [dAlg, dHash]});
-	return seq.getEncodedHex();
+	return seq.tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params !== undefined) this.setByParam(params);
 };
@@ -434,7 +437,7 @@ KJUR.asn1.tsp.TimeStampReq = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 
 	var a = [];
@@ -452,8 +455,9 @@ KJUR.asn1.tsp.TimeStampReq = function(params) {
 	    a.push(new _DERBoolean());
 
         var seq = new _DERSequence({array: a});
-	return seq.getEncodedHex();
+	return seq.tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -485,7 +489,7 @@ KJUR.asn1.tsp.TimeStampResp = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 
 	var a = [new _PKIStatusInfo(params.statusinfo)];
@@ -500,8 +504,9 @@ KJUR.asn1.tsp.TimeStampResp = function(params) {
 	}
 
 	var seq = new _DERSequence({array: a});
-	return seq.getEncodedHex();
+	return seq.tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -556,7 +561,7 @@ KJUR.asn1.tsp.PKIStatusInfo = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 
 	var a = [];
@@ -576,8 +581,9 @@ KJUR.asn1.tsp.PKIStatusInfo = function(params) {
 	}
 
 	var seq = new _DERSequence({array: a});
-	return seq.getEncodedHex();
+	return seq.tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -625,7 +631,7 @@ KJUR.asn1.tsp.PKIStatus = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 
 	var dObj, value;
@@ -642,8 +648,9 @@ KJUR.asn1.tsp.PKIStatus = function(params) {
 	    throw new _Error("unsupported params");
 	}
 
-	return (new _DERInteger({"int": value})).getEncodedHex();
+	return (new _DERInteger({"int": value})).tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -681,7 +688,7 @@ KJUR.asn1.tsp.PKIFreeText = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 
 	if (! params instanceof Array)
@@ -693,8 +700,9 @@ KJUR.asn1.tsp.PKIFreeText = function(params) {
 	};
 	
 	var seq = new _DERSequence({array: a});
-	return seq.getEncodedHex();
+	return seq.tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -747,7 +755,7 @@ KJUR.asn1.tsp.PKIFailureInfo = function(params) {
 
     this.params = null;
 
-    this.getEncodedHex = function() {
+    this.tohex = function() {
 	var params = this.params;
 
 	var value;
@@ -762,8 +770,9 @@ KJUR.asn1.tsp.PKIFailureInfo = function(params) {
 	} else {
 	    throw new _Error("wrong params");
 	}
-	return (new _DERBitString({"bin": value.toString(2)})).getEncodedHex();
+	return (new _DERBitString({"bin": value.toString(2)})).tohex();
     };
+    this.getEncodedHex = function() { return this.tohex(); };
 
     if (params != undefined) this.setByParam(params);
 };
@@ -833,7 +842,7 @@ KJUR.asn1.tsp.SimpleTSAAdapter = function(params) {
     if (params !== undefined) this.params = params;
 };
 extendClass(KJUR.asn1.tsp.SimpleTSAAdapter,
-                  KJUR.asn1.tsp.AbstractTSAAdapter);
+            KJUR.asn1.tsp.AbstractTSAAdapter);
 
 /**
  * class for fixed TimeStampToken generator (DEPRECATED)<br/>
@@ -878,7 +887,7 @@ KJUR.asn1.tsp.FixedTSAAdapter = function(params) {
     if (params !== undefined) this.params = params;
 };
 extendClass(KJUR.asn1.tsp.FixedTSAAdapter,
-                  KJUR.asn1.tsp.AbstractTSAAdapter);
+            KJUR.asn1.tsp.AbstractTSAAdapter);
 
 // --- TSP utilities -------------------------------------------------
 
@@ -896,7 +905,7 @@ KJUR.asn1.tsp.TSPUtil = new function() {
  * @function
  * @param {Array} param JSON parameter to generate TimeStampToken
  * @return {KJUR.asn1.cms.SignedData} object just generated
- * @deprecated since jsrsasign 10.0.0 asn1tsp 2.0.0 use TimeStampToken class
+ * @deprecated since jsrsasign 10.0.0 asn1tsp 2.0.0. Please use TimeStampToken class
  * @see KJUR.asn1.tsp.TimeStampToken
  *
  * @description
@@ -913,9 +922,13 @@ KJUR.asn1.tsp.TSPUtil.newTimeStampToken = function(params) {
  * @function
  * @param {String} hexadecimal string of TimeStampReq
  * @return {Array} JSON object of parsed parameters
+ * @see KJUR.asn1.tsp.TSPParser#getTimeStampReq
+ * @deprecated since jsrsasign 10.5.18 asn1tsp 2.0.6. Please use TSPParser.getTimeStampReq instead.
+ *
  * @description
  * This method parses a hexadecimal string of TimeStampReq
  * and returns parsed their fields:
+ *
  * @example
  * var json = KJUR.asn1.tsp.TSPUtil.parseTimeStampReq("302602...");
  * // resulted DUMP of above 'json':
@@ -928,37 +941,8 @@ KJUR.asn1.tsp.TSPUtil.newTimeStampToken = function(params) {
  *  certreq: true}                   // certReq (OPTION)
  */
 KJUR.asn1.tsp.TSPUtil.parseTimeStampReq = function(reqHex) {
-    var _ASN1HEX = ASN1HEX;
-    var _getChildIdx = _ASN1HEX.getChildIdx;
-    var _getV = _ASN1HEX.getV;
-    var _getTLV = _ASN1HEX.getTLV;
-    var json = {};
-    json.certreq = false;
-
-    var idxList = _getChildIdx(reqHex, 0);
-
-    if (idxList.length < 2)
-        throw "TimeStampReq must have at least 2 items";
-
-    var miHex = _getTLV(reqHex, idxList[1]);
-    json.messageImprint = KJUR.asn1.tsp.TSPUtil.parseMessageImprint(miHex); 
-
-    for (var i = 2; i < idxList.length; i++) {
-        var idx = idxList[i];
-        var tag = reqHex.substr(idx, 2);
-        if (tag == "06") { // case OID
-            var policyHex = _getV(reqHex, idx);
-            json.policy = _ASN1HEX.hextooidstr(policyHex);
-        }
-        if (tag == "02") { // case INTEGER
-            json.nonce = _getV(reqHex, idx);
-        }
-        if (tag == "01") { // case BOOLEAN
-            json.certreq = true;
-        }
-    }
-
-    return json;
+    var parser = new KJUR.asn1.tsp.TSPParser();
+    return parser.getTimeStampReq(reqHex);
 };
 
 /**
@@ -968,16 +952,21 @@ KJUR.asn1.tsp.TSPUtil.parseTimeStampReq = function(reqHex) {
  * @function
  * @param {String} hexadecimal string of MessageImprint
  * @return {Array} JSON object of parsed parameters
+ * @see KJUR.asn1.tsp.TSPParser#getMessageImprint
+ * @deprecated since jsrsasign 10.5.18 asn1tsp 2.0.6. Please use TSPParser.getMessageImprint instead.
+ *
  * @description
  * This method parses a hexadecimal string of MessageImprint
  * and returns parsed their fields:
+ *
  * @example
- * var json = KJUR.asn1.tsp.TSPUtil.parseMessageImprint("302602...");
- * // resulted DUMP of above 'json':
- * {hashAlg: 'sha256',          // MessageImprint hashAlg
- *  hashValue: 'a1a2a3a4...'}   // MessageImprint hashValue
+ * KJUR.asn1.tsp.TSPUtil.parseMessageImprint("302602...") &rarr;
+ * { alg:  'sha256', hash: 'a1a2a3a4...'}
  */
 KJUR.asn1.tsp.TSPUtil.parseMessageImprint = function(miHex) {
+    var parser = new KJUR.asn1.tsp.TSPParser();
+    return parser.getMessageImprint(miHex);
+/*
     var _ASN1HEX = ASN1HEX;
     var _getChildIdx = _ASN1HEX.getChildIdx;
     var _getV = _ASN1HEX.getV;
@@ -1001,6 +990,7 @@ KJUR.asn1.tsp.TSPUtil.parseMessageImprint = function(miHex) {
     json.hash = _getV(miHex, hashValueIdx); 
 
     return json;
+*/
 };
 
 /**
@@ -1466,5 +1456,60 @@ KJUR.asn1.tsp.TSPParser = function() {
 	} else {
 	    return n;
 	}
+    };
+
+    /**
+     * parse hexadecimal string of TimeStampReq<br/>
+     * @name getTimeStampReq
+     * @memberOf KJUR.asn1.tsp.TSPParser#
+     * @function
+     * @param {String} h hexadecimal string of TimeStampReq
+     * @return {Array} JSON object of parsed parameters
+     * @see KJUR.asn1.tsp.TSPUtil.parseTimeStampReq
+     *
+     * @description
+     * This method parses a hexadecimal string of TimeStampReq
+     * and returns parsed their fields:
+     *
+     * @example
+     * var json = KJUR.asn1.tsp.TSPUtil.parseTimeStampReq("302602...");
+     * // resulted DUMP of above 'json':
+     * {
+     *  messageImprint: {
+     *       alg: 'sha256',          // MessageImprint hashAlg
+     *       hash: 'a1a2a3a4...'},   // MessageImprint hashValue
+     *  policy: '1.2.3.4.5',         // tsaPolicy (OPTION)
+     *  nonce: '9abcf318...',        // nonce (OPTION)
+     *  certreq: true }              // certReq (OPTION)
+     */
+    this.getTimeStampReq = function(h) {
+	var json = {};
+	json.certreq = false;
+
+	var idxList = _getChildIdx(h, 0);
+
+	if (idxList.length < 2)
+            throw new Error("TimeStampReq must have at least 2 items");
+
+	var miHex = _getTLV(h, idxList[1]);
+	json.messageImprint = KJUR.asn1.tsp.TSPUtil.parseMessageImprint(miHex); 
+	//json.messageImprint = getMessageImprint(miHex); 
+
+	for (var i = 2; i < idxList.length; i++) {
+            var idx = idxList[i];
+            var tag = h.substr(idx, 2);
+            if (tag == "06") { // case OID
+		var policyHex = _getV(h, idx);
+		json.policy = _ASN1HEX.hextooidstr(policyHex);
+            }
+            if (tag == "02") { // case INTEGER
+		json.nonce = _getV(h, idx);
+            }
+            if (tag == "01") { // case BOOLEAN
+		json.certreq = true;
+            }
+	}
+
+	return json;
     };
 };
