@@ -1,4 +1,4 @@
-/* asn1-1.0.24.js (c) 2013-2022 Kenji Urushima | kjur.github.io/jsrsasign/license
+/* asn1-1.0.26.js (c) 2013-2022 Kenji Urushima | kjur.github.io/jsrsasign/license
  */
 /*
  * asn1.js - ASN.1 DER encoder classes
@@ -16,7 +16,7 @@
  * @fileOverview
  * @name asn1-1.0.js
  * @author Kenji Urushima kenji.urushima@gmail.com
- * @version jsrsasign 10.5.16 asn1 1.0.24 (2022-Apr-08)
+ * @version jsrsasign 10.5.22 asn1 1.0.26 (2022-May-24)
  * @since jsrsasign 2.1
  * @license <a href="https://kjur.github.io/jsrsasign/license/">MIT License</a>
  */
@@ -974,6 +974,7 @@ extendClass(KJUR.asn1.DERInteger, KJUR.asn1.ASN1Object);
  * NOTE1: 'params' can be omitted.<br/>
  * NOTE2: 'obj' parameter have been supported since
  * asn1 1.0.11, jsrsasign 6.1.1 (2016-Sep-25).<br/>
+ *
  * @example
  * // default constructor
  * o = new KJUR.asn1.DERBitString();
@@ -1041,18 +1042,19 @@ KJUR.asn1.DERBitString = function(params) {
      * @description
      * Its unused bits will be calculated automatically by length of 
      * 'binaryValue'. <br/>
-     * NOTE: Trailing zeros '0' will be ignored.
+     * NOTE: Leading zeros '0' will be ignored.
      * @example
      * o = new KJUR.asn1.DERBitString();
-     * o.setByBinaryString("01011");
+     * o.setByBinaryString("1011");
+     * o.setByBinaryString("001"); // leading zeros ignored
      */
     this.setByBinaryString = function(binaryString) {
         binaryString = binaryString.replace(/0+$/, '');
         var unusedBits = 8 - binaryString.length % 8;
         if (unusedBits == 8) unusedBits = 0;
-        for (var i = 0; i <= unusedBits; i++) {
-            binaryString += '0';
-        }
+	
+	binaryString += "0000000".substr(0, unusedBits);
+
         var h = '';
         for (var i = 0; i < binaryString.length - 1; i += 8) {
             var b = binaryString.substr(i, 8);

@@ -414,9 +414,20 @@ equal(binstrtobitstr("101"), "05a0", "101 > 05a0");
 equal(binstrtobitstr("101000001"), "07a080", "101000001 > 07a080");
 equal(binstrtobitstr("xyz"), null, "xyz > null");
 equal(binstrtobitstr(1234), null, "1234 > null");
-
 });
 
+test("namearraytobitstr test", function() {
+var db = {
+  apple: 0,
+  banana: 3,
+  mango: 4,
+  kiwi: 8,
+  orange: 9
+};
+equal(namearraytobinstr(['apple'], db), '1', '> 1');
+equal(namearraytobinstr(['apple','banana','mango'], db), '10011', '> 10011');
+equal(namearraytobinstr(['banana','kiwi','orange'], db), '0001000011', '> 0001000011');
+});
 
 });
 </script>

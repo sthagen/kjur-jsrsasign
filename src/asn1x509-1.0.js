@@ -1,4 +1,4 @@
-/* asn1x509-2.1.14.js (c) 2013-2022 Kenji Urushima | kjur.github.io/jsrsasign/license
+/* asn1x509-2.1.16.js (c) 2013-2022 Kenji Urushima | kjur.github.io/jsrsasign/license
  */
 /*
  * asn1x509.js - ASN.1 DER encoder classes for X.509 certificate
@@ -16,7 +16,7 @@
  * @fileOverview
  * @name asn1x509-1.0.js
  * @author Kenji Urushima kenji.urushima@gmail.com
- * @version jsrsasign 10.5.17 asn1x509 2.1.14 (2022-Apr-14)
+ * @version jsrsasign 10.5.22 asn1x509 2.1.16 (2022-May-24)
  * @since jsrsasign 2.1
  * @license <a href="https://kjur.github.io/jsrsasign/license/">MIT License</a>
  */
@@ -598,32 +598,45 @@ extendClass(KJUR.asn1.x509.Extension, KJUR.asn1.ASN1Object);
  */
 KJUR.asn1.x509.KeyUsage = function(params) {
     KJUR.asn1.x509.KeyUsage.superclass.constructor.call(this, params);
-    var _KEYUSAGE_NAME = X509.KEYUSAGE_NAME;
+
+    var _Error = Error;
+
+    var _nameValue = {
+	digitalSignature:	0,
+	nonRepudiation:		1,
+	keyEncipherment:	2,
+	dataEncipherment:	3,
+	keyAgreement:		4,
+	keyCertSign:		5,
+	cRLSign:		6,
+	encipherOnly:		7,
+	decipherOnly:		8
+    };
 
     this.getExtnValueHex = function() {
+	var binString = this.getBinValue();
+        this.asn1ExtnValue = new KJUR.asn1.DERBitString({bin: binString});
         return this.asn1ExtnValue.tohex();
     };
 
-    this.oid = "2.5.29.15";
-    if (params !== undefined) {
-        if (params.bin !== undefined) {
-            this.asn1ExtnValue = new KJUR.asn1.DERBitString(params);
-        }
-	if (params.names !== undefined &&
-	    params.names.length !== undefined) {
-	    var names = params.names;
-	    var s = "000000000";
-	    for (var i = 0; i < names.length; i++) {
-		for (var j = 0; j < _KEYUSAGE_NAME.length; j++) {
-		    if (names[i] === _KEYUSAGE_NAME[j]) {
-			s = s.substring(0, j) + '1' + 
-			    s.substring(j + 1, s.length);
-		    }
-		}
-	    }
-            this.asn1ExtnValue = new KJUR.asn1.DERBitString({bin: s});
+    this.getBinValue = function() {
+	var params = this.params;
+
+	if (typeof params != "object" ||
+	    (typeof params.names != "object" && typeof params.bin != "string"))
+	    throw new _Error("parameter not yet set");
+
+	if (params.names != undefined) {
+	    return namearraytobinstr(params.names, _nameValue);
+	} else if (params.bin != undefined) {
+	    return params.bin;
+	} else {
+	    throw new _Error("parameter not set properly");
 	}
-    }
+    };
+
+    this.oid = "2.5.29.15";
+    if (params !== undefined) this.params = params;
 };
 extendClass(KJUR.asn1.x509.KeyUsage, KJUR.asn1.x509.Extension);
 
