@@ -17,9 +17,15 @@ Public page is https://kjur.github.io/jsrsasign .
 
 Your bugfix and pull request contribution are always welcomed :)
 
-NOTICE FOR COMMING 11.0.0 RELEASE
+ADVANCE NOTICE OF END-OF-SUPPORT (2026-APR-10)
+----------------------------------------------
+The "jsrsasign" will reach end-of-support in a few months. Some unfixed vulnerabilities have been reported for now. Hopefully most of them are fixed until the end of support. GitHub Support for this project will also be closed in a few week. Thank you for your long-standing support of this project.
+
+We will announce the end-of-support date here as soon as it is determined.
+
+NOTICE FOR 11.0.0 RELEASE
 ---------------------------------
-The "jsrsasign" library is a long lived JavaScript library from 2010 developed with old JavaScript style and backword compatibility. From coming release 11.0.0, following are planed and suport them gradually:
+The "jsrsasign" library is a long lived JavaScript library from 2010 developed with old JavaScript style and backword compatibility. From coming release 11.0.0, following changes have been applied:
 - Stop to support Internet Explorer.
 - Stop to support bower.
 - Modern ECMA functions will be introduced such as Promise, let, Array methods or class.
@@ -101,19 +107,4 @@ MORE TUTORIALS AND SAMPLES
 |2020Jun22|8.0.17|[RSA-PSS signature validation vulnerability by prepending zeros](https://github.com/kjur/jsrsasign/security/advisories/GHSA-q3gh-5r98-j4h3)|CVE-2020-14968|4.2|
 
 Here is [full published security advisory list](https://github.com/kjur/jsrsasign/security/advisories?state=published).
-
-## DONATIONS
-
-If you like jsrsasign and my other project, you can support their development by donation through any of the platform/services below. Thank you as always.
-
-### Github Sponsors
-You can sponsor jsrsasign with the [GitHub Sponsors](https://github.com/sponsors/kjur) program.
-
-### Cryptocurrency
-You can donate cryptocurrency to jsrsasign using the following addresses:
-- Bitcoin(BTC): [34vSRe7XHoMy78HKgps9YJ5BrBLYJLeM22](https://en.cryptobadges.io/donate/34vSRe7XHoMy78HKgps9YJ5BrBLYJLeM22)
-- Ethereum(ETH): [0x9c4cdbb531e5b84796ff5f91a9f652704761e64e](https://en.cryptobadges.io/donate/0x9c4cdbb531e5b84796ff5f91a9f652704761e64e)
-- Litecoin(LTC): [LPf3VDJVamwPcNJNjjVtrUQuJQ17ZyWzeU](https://en.cryptobadges.io/donate/LPf3VDJVamwPcNJNjjVtrUQuJQ17ZyWzeU)
-- Bitcoin Cash(BCH): bitcoincash:pq3hy08pc9vm57q6ddgsc06cqdffmfzwwqxd9yejyf
-
 
