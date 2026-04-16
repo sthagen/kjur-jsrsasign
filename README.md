@@ -6,10 +6,8 @@ jsrsasign
 [![npm downloads](https://img.shields.io/npm/dm/jsrsasign.svg)](https://www.npmjs.com/package/jsrsasign)
 [![jsdeliver downloads](https://data.jsdelivr.com/v1/package/npm/jsrsasign/badge)](https://www.jsdelivr.com/package/npm/jsrsasign)
 [![CDNJS](https://img.shields.io/cdnjs/v/jsrsasign.svg)](https://cdnjs.com/libraries/jsrsasign)
-[![githubsponsors](https://img.shields.io/badge/github-donate-yellow.svg)](https://github.com/sponsors/kjur)
-[![cryptocurrency](https://img.shields.io/badge/crypto-donate-yellow.svg)](https://github.com/kjur/jsrsasign#cryptocurrency)
 
-jsrsasign [TOP](https://kjur.github.io/jsrsasign/) | [github](https://github.com/kjur/jsrsasign) | [Wiki](https://github.com/kjur/jsrsasign/wiki) | [DOWNLOADS](https://github.com/kjur/jsrsasign/releases) | [TUTORIALS](https://github.com/kjur/jsrsasign/wiki#programming-tutorial) | [API REFERENCE](https://kjur.github.io/jsrsasign/api/) | [Online Tool](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Online-Tools) | [DEMO](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Demo) | [NODE TOOL](https://github.com/kjur/jsrsasign/wiki/Sample-Node-Tool-List) | [AddOn](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Add-On) | [DONATE](https://github.com/kjur/jsrsasign#donations)
+jsrsasign [TOP](https://kjur.github.io/jsrsasign/) | [github](https://github.com/kjur/jsrsasign) | [Wiki](https://github.com/kjur/jsrsasign/wiki) | [DOWNLOADS](https://github.com/kjur/jsrsasign/releases) | [TUTORIALS](https://github.com/kjur/jsrsasign/wiki#programming-tutorial) | [API REFERENCE](https://kjur.github.io/jsrsasign/api/) | [Online Tool](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Online-Tools) | [DEMO](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Demo) | [NODE TOOL](https://github.com/kjur/jsrsasign/wiki/Sample-Node-Tool-List) | [AddOn](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Add-On)
 
 The 'jsrsasign' (RSA-Sign JavaScript Library) is an opensource free cryptography library supporting RSA/RSAPSS/ECDSA/DSA signing/validation, ASN.1, PKCS#1/5/8 private/public key, X.509 certificate, CRL, OCSP, CMS SignedData, TimeStamp, CAdES JSON Web Signature/Token/Key in pure JavaScript.
 
@@ -17,11 +15,11 @@ Public page is https://kjur.github.io/jsrsasign .
 
 Your bugfix and pull request contribution are always welcomed :)
 
-ADVANCE NOTICE OF END-OF-SUPPORT (2026-APR-10)
-----------------------------------------------
-The "jsrsasign" will reach end-of-support in a few months. Some unfixed vulnerabilities have been reported for now. Hopefully most of them are fixed until the end of support. GitHub Support for this project will also be closed in a few week. Thank you for your long-standing support of this project.
+End of Support Announcement for jsrsasign
+-----------------------------------------
+On 14 April 2026, we announce end of support for jsrsasign. 
 
-We will announce the end-of-support date here as soon as it is determined.
+Effective 3 Jun 2026, support is no longer provided for jsrsasign and all version of "npm" packages of jsrsasign is deprecated. Thank you very much for using jsrsasign since the release of its first version, 1.0, on June 3, 2010.
 
 NOTICE FOR 11.0.0 RELEASE
 ---------------------------------
@@ -38,6 +36,7 @@ The "jsrsasign" library is a long lived JavaScript library from 2010 developed w
 
 NEWS
 ----
+- 2026-Apr-14: We have disabled GitHub Sponsors for this project and will no longer be accepting sponsorships. Thank you very much for your long-standing support.
 - 2024-Jan-16: [Security advisory](https://github.com/kjur/jsrsasign/security/advisories/GHSA-rh63-9qcf-83gf) and [update](https://github.com/kjur/jsrsasign/releases/tag/11.0.0) for Marvin attack vulnerability published. Due to this vulnerability, RSA PKCS#1.5 and RSAOAEP encryption/decryption no longer be supported.
 - 2023-Mar-12: [10.7.0 Release](https://github.com/kjur/jsrsasign/releases/tag/10.7.0). Now supports custom X.509 extension and custom OIDs by new "Add-on" architecture. ([See here in detail](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Add-On2))
 - 2021-Nov-21: [10.5.0 Release](https://github.com/kjur/jsrsasign/releases/tag/10.5.0). Now supports secp521r1(P-521) ECDSA.
