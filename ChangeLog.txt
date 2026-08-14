@@ -1,6 +1,11 @@
 
 ChangeLog for jsrsasign
 
+* Changes from 11.1.3 to 11.1.4 (2026-Aug-14)
+  - Security fixes
+    - CMS.verifySignedData security fix if signerInfos is empty reported by Arpit Jain.
+    - DSA security fix not to accept g=1 and y=1 key reported by wzc with fix patch.
+
 * Changes from 11.1.2 to 11.1.3 (2026-Apr-18)
   - base64x.js
     - timingSafeEqual and timingSafeEqualImpl added
