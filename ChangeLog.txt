@@ -1,6 +1,10 @@
 
 ChangeLog for jsrsasign
 
+* Changes from 11.1.4 to 11.1.5 (2026-Aug-14)
+  - npm/README.md update to align README.md
+  - index.html update to annaunce the end of support.
+
 * Changes from 11.1.3 to 11.1.4 (2026-Aug-14)
   - Security fixes
     - CMS.verifySignedData security fix if signerInfos is empty reported by Arpit Jain.
