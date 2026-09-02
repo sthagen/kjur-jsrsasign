@@ -1,4 +1,4 @@
-jsrsasign
+jsrsasign (END OF SUPPORT)
 =========
 
 [![license](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/kjur/jsrsasign/blob/master/LICENSE.txt)
@@ -17,9 +17,7 @@ Your bugfix and pull request contribution are always welcomed :)
 
 End of Support Announcement for jsrsasign
 -----------------------------------------
-On 14 April 2026, we announce end of support for jsrsasign. 
-
-Effective 3 Jun 2026, support is no longer provided for jsrsasign and all version of "npm" packages of jsrsasign is deprecated. Thank you very much for using jsrsasign since the release of its first version, 1.0, on June 3, 2010.
+Effective 14 Aug 2026, support is no longer provided for jsrsasign and all version of "npm" packages of jsrsasign is deprecated. Thank you very much for using jsrsasign since the release of its first version, 1.0, on June 3, 2010.
 
 NOTICE FOR 11.0.0 RELEASE
 ---------------------------------
@@ -36,6 +34,7 @@ The "jsrsasign" library is a long lived JavaScript library from 2010 developed w
 
 NEWS
 ----
+- 2026-Aug-14: 11.1.4 final release and *END OF SUPPORT*. npm packages are *DEPRECATED*.
 - 2026-Apr-14: We have disabled GitHub Sponsors for this project and will no longer be accepting sponsorships. Thank you very much for your long-standing support.
 - 2024-Jan-16: [Security advisory](https://github.com/kjur/jsrsasign/security/advisories/GHSA-rh63-9qcf-83gf) and [update](https://github.com/kjur/jsrsasign/releases/tag/11.0.0) for Marvin attack vulnerability published. Due to this vulnerability, RSA PKCS#1.5 and RSAOAEP encryption/decryption no longer be supported.
 - 2023-Mar-12: [10.7.0 Release](https://github.com/kjur/jsrsasign/releases/tag/10.7.0). Now supports custom X.509 extension and custom OIDs by new "Add-on" architecture. ([See here in detail](https://github.com/kjur/jsrsasign/wiki/jsrsasign-Add-On2))
